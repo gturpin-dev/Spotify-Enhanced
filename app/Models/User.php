@@ -53,4 +53,9 @@ class User extends Authenticatable
     {
         return ! is_null( $this->github_id );
     }
+
+    public function isSpotifyDeveloperAppLinked(): bool
+    {
+        return true; // @TODO to be implemented
+    }
 }
