@@ -33,7 +33,7 @@ class SpotifyAuthController extends Controller
             $current_user = Auth::user();
             $this->link_spotify_account($current_user, $spotify_user);
 
-            return to_route('dashboard')
+            return to_route('profile.edit')
                 ->with('success', __('Spotify account linked successfully'));
         }
 
