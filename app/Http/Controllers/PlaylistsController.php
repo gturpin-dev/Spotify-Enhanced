@@ -8,7 +8,7 @@ class PlaylistsController extends Controller
 {
     public function index()
     {
-        dd('PlaylistsController@index');
+        dd('PlaylistsController@index'); // @TODO implement the view
         return view('playlists.index');
     }
 }
