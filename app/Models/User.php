@@ -11,20 +11,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'avatar',
-        'github_id',
-        'github_token',
-        'github_refresh_token',
-        'password',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -49,13 +36,13 @@ class User extends Authenticatable
         ];
     }
 
-    public function isAuthenticatedViaOauth(): bool
+    public function isAuthenticatedViaOAuth(): bool
     {
-        return ! is_null( $this->github_id );
+        return ! is_null( $this->oauth_provider );
     }
 
-    public function isSpotifyDeveloperAppLinked(): bool
+    public function isSpotifyAccountLinked(): bool
     {
-        return true; // @TODO to be implemented
+        return ! is_null( $this->spotify_id );
     }
 }

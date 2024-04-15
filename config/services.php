@@ -37,4 +37,17 @@ return [
         'redirect'      => env('GITHUB_REDIRECT_URI'),
     ],
 
+    'spotify' => [
+        'client_id'     => env('SPOTIFY_CLIENT_ID'),
+        'client_secret' => env('SPOTIFY_CLIENT_SECRET'),
+        'redirect'      => env('SPOTIFY_REDIRECT_URI'),
+        'scopes'        => [
+            'user-read-private',
+            'user-read-email',
+            'playlist-read-private',
+            'playlist-read-collaborative',
+            'playlist-modify-private',
+            'playlist-modify-public',
+        ],
+    ],
 ];

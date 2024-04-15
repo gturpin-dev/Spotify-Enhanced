@@ -7,10 +7,9 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * This middleware ensures that the user has linked their Spotify account.
- * The spotify account must be a developer account to access the Spotify API.
+ * This middleware ensures that the user has linked their Spotify account
  */
-class EnsureSpotifyDeveloperAppLinked
+class EnsureSpotifyAccountLinked
 {
     /**
      * Handle an incoming request.
@@ -19,7 +18,7 @@ class EnsureSpotifyDeveloperAppLinked
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ( ! $request->user()->isSpotifyDeveloperAppLinked() ) {
+        if ( ! $request->user()->isSpotifyAccountLinked() ) {
             return to_route('profile.edit')
                 ->with('error', 'Please link your Spotify account to continue.');
         }

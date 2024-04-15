@@ -18,9 +18,11 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('avatar')->nullable();
-            $table->integer('github_id')->nullable()->index();
-            $table->string('github_token')->nullable();
-            $table->string('github_refresh_token')->nullable();
+            $table->string('oauth_provider')->nullable();
+            $table->string('oauth_provider_id')->nullable();
+            $table->string('spotify_id')->nullable();
+            $table->string('spotify_token', 4096)->nullable();
+            $table->string('spotify_refresh_token', 4096)->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

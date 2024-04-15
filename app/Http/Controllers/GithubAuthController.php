@@ -17,18 +17,17 @@ class GithubAuthController extends Controller
 
     public function handleProviderCallback()
     {
-        $user = Socialite::driver('github')->user();
-        $user = User::firstOrCreate([
-            'github_id' => $user->getId()
+        $github_user = Socialite::driver('github')->user();
+        $user        = User::firstOrCreate( [
+            'oauth_provider_id' => $github_user->getId(),
         ], [
-            'github_id'            => $user->getId(),
-            'name'                 => $user->getName(),
-            'email'                => $user->getEmail(),
-            'email_verified_at'    => now(),
-            'avatar'               => $user->getAvatar(),
-            'github_token'         => $user->token,
-            'github_refresh_token' => $user->refreshToken,
-            'password'             => bcrypt(Str::random(16)), // Random password
+            'oauth_provider_id' => $github_user->getId(),
+            'oauth_provider'    => 'github',
+            'name'              => $github_user->getName(),
+            'email'             => $github_user->getEmail(),
+            'email_verified_at' => now(),
+            'avatar'            => $github_user->getAvatar(),
+            'password'          => bcrypt(Str::random(16)),   // Random password
         ]);
 
         Auth::login($user);

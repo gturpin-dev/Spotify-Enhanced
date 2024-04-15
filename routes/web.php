@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PlaylistsController;
 use App\Http\Controllers\GithubAuthController;
-use App\Http\Middleware\EnsureSpotifyDeveloperAppLinked;
+use App\Http\Controllers\SpotifyAuthController;
+use App\Http\Middleware\EnsureSpotifyAccountLinked;
 
 Route::get('/', function () {
     return view('welcome');
@@ -20,7 +21,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', EnsureSpotifyDeveloperAppLinked::class])
+Route::middleware(['auth', EnsureSpotifyAccountLinked::class])
     ->prefix('playlists')
     ->name('playlists.')
     ->group(function () {
@@ -28,8 +29,11 @@ Route::middleware(['auth', EnsureSpotifyDeveloperAppLinked::class])
 });
 
 Route::middleware('guest')->group(function () {
-    Route::get('/auth/github/redirect', [GithubAuthController::class, 'redirectToProvider'])->name('auth.github');
+    Route::get('/auth/github', [GithubAuthController::class, 'redirectToProvider'])->name('auth.github');
     Route::get('/auth/github/callback', [GithubAuthController::class, 'handleProviderCallback']);
 });
+
+Route::get('/auth/spotify', [SpotifyAuthController::class, 'redirectToProvider'])->name('auth.spotify');
+Route::get('/auth/spotify/callback', [SpotifyAuthController::class, 'handleProviderCallback']);
 
 require __DIR__.'/auth.php';

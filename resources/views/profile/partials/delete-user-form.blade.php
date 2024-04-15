@@ -27,7 +27,7 @@
                 {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please confirm that you really want to permanently delete your account.') }}
             </p>
 
-            @if ( ! auth()->user()->isAuthenticatedViaOauth() )
+            @if ( ! auth()->user()->isAuthenticatedViaOAuth() )
                 <div class="mt-6">
                     <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
 

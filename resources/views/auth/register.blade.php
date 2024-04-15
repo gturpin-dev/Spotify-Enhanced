@@ -39,9 +39,12 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <div class="flex justify-center items-center mt-4">
+        <div class="flex justify-center items-center mt-4 space-x-4">
             <a href="{{ route('auth.github') }}" class="flex items-center justify-center">
                 <i class="fab fa-github fa-2x"></i>
+            </a>
+            <a href="{{ route('auth.spotify') }}" class="flex items-center justify-center">
+                <i class="fab fa-spotify fa-2x"></i>
             </a>
         </div>
 
