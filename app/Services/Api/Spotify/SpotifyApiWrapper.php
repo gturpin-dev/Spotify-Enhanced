@@ -2,6 +2,7 @@
 
 namespace App\Services\Api\Spotify;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
@@ -10,9 +11,11 @@ class SpotifyApiWrapper
     protected static string $baseUrl = 'https://api.spotify.com/v1';
     protected string $access_token;
 
-    public function __construct()
-    {
-        $this->access_token = Auth::user()->spotify_token;
+    public function __construct(
+        protected ?User $user = null
+    ) {
+        $this->user ??= Auth::user();
+        $this->access_token = $this->user->spotify_token;
     }
 
     /**
@@ -26,10 +29,11 @@ class SpotifyApiWrapper
     public function get_playlists( int $offset = 0, $current_playlists = [] ): array {
         $limit    = 50;
         $response = Http::withToken( $this->access_token )
-            ->get( self::$baseUrl . '/users/' . Auth::user()->spotify_id . '/playlists', [
+            ->get( self::$baseUrl . '/users/' . $this->user->spotify_id . '/playlists', [
                 'limit'  => $limit,
                 'offset' => $offset,
             ] );
+        dd($this->user, $response->json());
 
         if ( ! $response->successful() ) {
             return $current_playlists;

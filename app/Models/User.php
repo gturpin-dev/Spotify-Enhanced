@@ -45,4 +45,9 @@ class User extends Authenticatable
     {
         return ! is_null( $this->spotify_id );
     }
+
+    public function scopeWithSpotifyAccountLinked( $query )
+    {
+        return $query->whereNotNull( 'spotify_id' );
+    }
 }
