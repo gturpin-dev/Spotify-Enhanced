@@ -124,6 +124,8 @@ return [
     ],
 
     'aliases' => [
+        'Auth' => Illuminate\Support\Facades\Auth::class,
+        'Route' => Illuminate\Support\Facades\Route::class,
         'Redis' => Illuminate\Support\Facades\Redis::class,
     ],
 ];
