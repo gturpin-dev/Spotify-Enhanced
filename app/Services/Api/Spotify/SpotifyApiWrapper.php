@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
 
+/**
+ * Basic wrapper to interact with the Spotify API
+ */
 class SpotifyApiWrapper
 {
     protected const MAX_REFRESH_ATTEMPTS = 3;
@@ -22,7 +25,6 @@ class SpotifyApiWrapper
         protected ?User $user = null
     ) {
         $this->user ??= Auth::user();
-        $this->access_token = $this->user->spotify_token;
     }
 
     /**
@@ -37,7 +39,7 @@ class SpotifyApiWrapper
      */
     protected function api_request( HttpMethod $method, string $endpoint, array $params = [] ): Response {
         $method   = Str::lower( $method->value );
-        $response = Http::withToken( $this->access_token )
+        $response = Http::withToken( $this->user->spotify_token )
             ->retry(
                 when: function ( \Exception $exception, PendingRequest $request ) {
                     // Bail if the exception is not an HTTP exception
@@ -48,7 +50,7 @@ class SpotifyApiWrapper
 
                     // Refresh the token and retry the request
                     $this->refresh_token();
-                    $request->withToken( $this->access_token );
+                    $request->withToken( $this->user->spotify_token );
 
                     return true;
                 },
@@ -85,7 +87,6 @@ class SpotifyApiWrapper
             'spotify_token'         => $tokens['access_token'] ?? $this->user->spotify_token,
             'spotify_refresh_token' => $tokens['refresh_token'] ?? $this->user->spotify_refresh_token,
         ] );
-        $this->access_token = $this->user->spotify_token;
 
         return true;
     }
