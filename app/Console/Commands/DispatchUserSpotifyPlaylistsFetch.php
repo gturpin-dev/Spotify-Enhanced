@@ -30,7 +30,6 @@ class DispatchUserSpotifyPlaylistsFetch extends Command
      */
     public function handle()
     {
-        // @TODO : find a way to refresh the access token globally if it's expired to prevent all jobs from failing early
         User::WithSpotifyAccountLinked()->get()
             ->chunk(self::CHUNK_SIZE)
             ->reduce( function( int $accumulated_delay, $chunk ) {
