@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\FetchUserSpotifyPlaylistsJob;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Services\Spotify\PlaylistService;
+use App\Jobs\FetchUserSpotifyPlaylistsJob;
 
 class PlaylistsController extends Controller
 {
     public function index()
     {
 
-        (new FetchUserSpotifyPlaylistsJob(User::find(2)))->handle();
+        FetchUserSpotifyPlaylistsJob::dispatch(User::find(2), app( PlaylistService::class ) );
         // dd($playlists, 'PlaylistsController@index'); // @TODO implement the view
         return view('playlists.index');
     }
