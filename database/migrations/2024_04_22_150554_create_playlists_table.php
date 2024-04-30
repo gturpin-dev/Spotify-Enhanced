@@ -17,6 +17,9 @@ return new class extends Migration
             $table->foreignIdFor(User::class);
             $table->string('spotify_id');
             $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('thumbnail_url')->nullable();
+            $table->string('owner');
             $table->boolean('is_public');
             $table->boolean('is_collaborative');
         });

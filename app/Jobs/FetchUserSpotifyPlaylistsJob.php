@@ -5,12 +5,14 @@ namespace App\Jobs;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
+use App\DataObjects\Spotify\PlaylistDTO;
 use Illuminate\Queue\InteractsWithQueue;
+use App\Services\Spotify\PlaylistService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Services\Api\Spotify\SpotifyApiWrapper;
 
-class FetchUserSpotifyPlaylists implements ShouldQueue
+class FetchUserSpotifyPlaylistsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -28,11 +30,11 @@ class FetchUserSpotifyPlaylists implements ShouldQueue
      */
     public function handle(): void
     {
-        $spotifyService = new SpotifyApiWrapper( $this->user );
-        $playlists      = $spotifyService->get_playlists();
+        $spotify_service  = new SpotifyApiWrapper( $this->user );
+        $playlist_service = new PlaylistService();
 
-        dd($playlists, $this->user);
-
-        // @TODO save the playlists to the database | Another service, cast playlists into playlistDTOs
+        collect( $spotify_service->get_playlists() )
+            ->map( fn( array $playlist ) => PlaylistDTO::from( $playlist ) )
+            ->each( fn( PlaylistDTO $playlist_dto ) => $playlist_service->store( $playlist_dto, $this->user ) );
     }
 }
