@@ -40,7 +40,7 @@ class DispatchUserSpotifyPlaylistsFetchCommand extends Command
         $users->chunk(self::CHUNK_SIZE)
             ->reduce( function( int $accumulated_delay, $chunk ) use ( $progress_bar ) {
                 $chunk->each( function( User $user ) use ( $progress_bar, &$accumulated_delay ) {
-                    FetchUserSpotifyPlaylistsJob::dispatch( $user, app( PlaylistService::class ) )
+                    FetchUserSpotifyPlaylistsJob::dispatch( $user )
                         ->delay( now()->addMinutes( $accumulated_delay ) );
                     $progress_bar->advance();
                 });

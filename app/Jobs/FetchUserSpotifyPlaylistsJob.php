@@ -21,7 +21,6 @@ class FetchUserSpotifyPlaylistsJob implements ShouldQueue
      */
     public function __construct(
         protected User $user,
-        protected PlaylistService $playlist_service
     ) {
         //
     }
@@ -29,12 +28,12 @@ class FetchUserSpotifyPlaylistsJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+        public function handle( PlaylistService $playlist_service ): void
     {
         $spotify_service = new SpotifyApiWrapper( $this->user );
 
         collect( $spotify_service->get_playlists() )
             ->map( fn( array $playlist ) => PlaylistDTO::from( $playlist ) )
-            ->each( fn( PlaylistDTO $playlist_dto ) => $this->playlist_service->store( $playlist_dto, $this->user ) );
+            ->each( fn( PlaylistDTO $playlist_dto ) => $playlist_service->store( $playlist_dto, $this->user ) );
     }
 }
