@@ -28,11 +28,11 @@ class FetchUserSpotifyPlaylistsJob implements ShouldQueue
     /**
      * Execute the job.
      */
-        public function handle( PlaylistService $playlist_service ): void
+        public function handle( PlaylistService $playlist_service, SpotifyApiWrapper $spotify_api_wrapper  ): void
     {
-        $spotify_service = new SpotifyApiWrapper( $this->user );
+        $spotify_api_wrapper->act_as( $this->user );
 
-        collect( $spotify_service->get_playlists() )
+        collect( $spotify_api_wrapper->get_playlists() )
             ->map( fn( array $playlist ) => PlaylistDTO::from( $playlist ) )
             ->each( fn( PlaylistDTO $playlist_dto ) => $playlist_service->store( $playlist_dto, $this->user ) );
     }

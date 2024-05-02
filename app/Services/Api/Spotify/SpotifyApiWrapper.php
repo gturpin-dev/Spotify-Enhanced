@@ -28,6 +28,15 @@ class SpotifyApiWrapper
     }
 
     /**
+     * Set the user to act as for querying the API
+     */
+    public function act_as( User $user ): static {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
      * Make a request to the Spotify API
      * If the token is expired, it will be refreshed and the request will be retried
      *
