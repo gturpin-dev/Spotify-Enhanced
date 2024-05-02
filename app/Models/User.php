@@ -56,4 +56,9 @@ class User extends Authenticatable
     public function playlists(): HasMany {
         return $this->hasMany( Playlist::class );
     }
+
+    public static function current(): ?self
+    {
+        return auth()->user();
+    }
 }
