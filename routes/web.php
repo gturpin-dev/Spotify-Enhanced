@@ -26,11 +26,8 @@ Route::middleware('auth')
     });
 
 Route::middleware(['auth', EnsureSpotifyAccountLinked::class])
-    ->prefix('playlists')
-    ->name('playlists.')
-    ->controller(PlaylistsController::class)
     ->group(function () {
-        Route::get('/', 'index')->name('index');
+        Route::get('/my-playlists', [ PlaylistsController::class, 'index' ] )->name('playlists.index');
     });
 
 Route::middleware('guest')->group(function () {

@@ -13,6 +13,6 @@ class PlaylistsController extends Controller
 {
     public function index()
     {
-        return Playlist::all();
+        return view( 'playlists.index' );
     }
 }
