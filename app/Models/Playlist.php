@@ -11,12 +11,11 @@ class Playlist extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
-
     protected $guarded = [];
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)
+            ->withTimestamps();
     }
 }

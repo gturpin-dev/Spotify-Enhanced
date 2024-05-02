@@ -5,8 +5,6 @@ namespace App\Console\Commands;
 use App\Models\User;
 use Illuminate\Console\Command;
 use App\Jobs\FetchUserSpotifyPlaylistsJob;
-use App\Services\Api\Spotify\SpotifyApiWrapper;
-use App\Services\Spotify\PlaylistService;
 
 class DispatchUserSpotifyPlaylistsFetchCommand extends Command
 {
@@ -37,7 +35,7 @@ class DispatchUserSpotifyPlaylistsFetchCommand extends Command
         $users        = User::WithSpotifyAccountLinked()->get();
         $progress_bar = $this->output->createProgressBar($users->count());
 
-        $users->chunk(self::CHUNK_SIZE)
+        $users->chunk( self::CHUNK_SIZE )
             ->reduce( function( int $accumulated_delay, $chunk ) use ( $progress_bar ) {
                 $chunk->each( function( User $user ) use ( $progress_bar, &$accumulated_delay ) {
                     FetchUserSpotifyPlaylistsJob::dispatch( $user )

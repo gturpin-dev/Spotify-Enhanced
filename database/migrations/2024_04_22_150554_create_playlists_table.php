@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('owner');
             $table->boolean('is_public');
             $table->boolean('is_collaborative');
+            $table->timestamps();
         });
     }
 
