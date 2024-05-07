@@ -18,10 +18,13 @@ class SearchNamePlaylistFilter
      */
     public function __invoke( Builder $query, Closure $next ): Builder
     {
-        // Apply only if the search is not empty
-        if ( ! is_null( $this->search ) && ! empty( $this->search ) ) {
-            $query->search( 'name', $this->search );
+        // Bail if the search is empty
+        if ( is_null( $this->search ) || empty( $this->search ) ) {
+            return $next( $query );
         }
+
+        // Apply the filter
+        $query->search( 'name', $this->search );
 
         return $next( $query );
     }
