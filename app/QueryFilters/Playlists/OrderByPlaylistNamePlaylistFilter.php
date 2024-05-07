@@ -3,25 +3,28 @@
 namespace App\QueryFilters\Playlists;
 
 use Closure;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder;
 
 class OrderByPlaylistNamePlaylistFilter
 {
+    public function __construct(
+        protected ?string $order = null
+    ) {
+        $this->order ??= request()->input( 'order' );
+    }
+
     /**
      * Invoke the class instance.
      */
     public function __invoke( Builder $query, Closure $next ): Builder
     {
-        $request = request();
-        $orderby = $request->input( 'orderby' );
-        $order   = $request->input( 'order' ) === 'DESC' ? 'DESC' : 'ASC';
-
-        // Bail if there is no order by query
-        if ( $orderby !== 'name' ) {
+        // Bail if the order is empty
+        if ( is_null( $this->order ) || empty( $this->order ) ) {
             return $next( $query );
         }
 
-        $query->orderBy( 'name', $order );
+        // Apply the filter
+        $query->orderBy( 'name', $this->order );
 
         return $next( $query );
     }
