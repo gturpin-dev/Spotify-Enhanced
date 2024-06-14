@@ -2,6 +2,7 @@
 
 namespace App\Http\Integrations\Spotify;
 
+use App\DataObjects\Spotify\OAuthDetailsDTO;
 use Saloon\Http\Request;
 use Saloon\Http\Connector;
 use Saloon\Contracts\Body\HasBody;
@@ -17,6 +18,7 @@ use Saloon\Exceptions\Request\FatalRequestException;
 use Saloon\PaginationPlugin\Contracts\HasPagination;
 use App\Http\Integrations\Spotify\Requests\RefreshTokensRequest;
 use App\Http\Integrations\Spotify\Paginations\PlaylistsPagination;
+use App\Models\User;
 
 class SpotifyConnector extends Connector implements HasPagination
 {
@@ -27,7 +29,7 @@ class SpotifyConnector extends Connector implements HasPagination
     public ?int $retryInterval = 100;
 
     public function __construct(
-        protected string $token
+        protected User $user,
     ) {}
 
     /**
@@ -40,7 +42,7 @@ class SpotifyConnector extends Connector implements HasPagination
 
     protected function defaultAuth(): ?Authenticator
     {
-        return new TokenAuthenticator( $this->token );
+        return new TokenAuthenticator( $this->user->spotify_token );
     }
 
     /**
@@ -60,19 +62,17 @@ class SpotifyConnector extends Connector implements HasPagination
     protected function refreshToken(): void
     {
         $response = $this->send(
-            new RefreshTokensRequest( auth()->user()->spotify_refresh_token )
+            new RefreshTokensRequest( $this->user->spotify_refresh_token )
         );
 
         $oauth_details = $response->dtoOrFail();
         $access_token  = $oauth_details->access_token;
-        $refresh_token = $oauth_details->refresh_token ?? auth()->user()->spotify_refresh_token;
+        $refresh_token = $oauth_details->refresh_token ?? $this->user->spotify_refresh_token;
 
-        auth()->user()->update( [
+        $this->user->update( [
             'spotify_token'         => $access_token,
             'spotify_refresh_token' => $refresh_token
         ] );
-
-        $this->token = $access_token;
     }
 
     public function paginate(Request $request): Paginator

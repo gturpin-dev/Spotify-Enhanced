@@ -5,12 +5,10 @@ namespace App\Http\Integrations\Spotify\Requests;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
-use Saloon\Http\SoloRequest;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Contracts\Authenticator;
 use Saloon\Traits\Body\HasFormBody;
 use Saloon\Http\Auth\BasicAuthenticator;
-use Saloon\Contracts\Body\BodyRepository;
 use App\DataObjects\Spotify\OAuthDetailsDTO;
 
 class RefreshTokensRequest extends Request implements HasBody
