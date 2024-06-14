@@ -6,7 +6,7 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\OffsetPaginator;
 
-final class PlaylistsPagination extends OffsetPaginator
+final class PlaylistsPaginator extends OffsetPaginator
 {
     protected ?int $perPageLimit = 50;
 
@@ -17,6 +17,6 @@ final class PlaylistsPagination extends OffsetPaginator
 
     protected function getPageItems(Response $response, Request $request): array
     {
-        return $response->json('items');
+        return $response->json( 'items', [] );
     }
 }

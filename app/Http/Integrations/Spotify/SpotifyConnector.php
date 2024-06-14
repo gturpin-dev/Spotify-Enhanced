@@ -2,12 +2,9 @@
 
 namespace App\Http\Integrations\Spotify;
 
-use App\DataObjects\Spotify\OAuthDetailsDTO;
 use Saloon\Http\Request;
 use Saloon\Http\Connector;
-use Saloon\Contracts\Body\HasBody;
 use Saloon\Contracts\Authenticator;
-use Saloon\Traits\Body\HasJsonBody;
 use Saloon\Helpers\OAuth2\OAuthConfig;
 use Saloon\PaginationPlugin\Paginator;
 use Saloon\Traits\Plugins\AcceptsJson;
@@ -17,7 +14,7 @@ use Saloon\Traits\OAuth2\AuthorizationCodeGrant;
 use Saloon\Exceptions\Request\FatalRequestException;
 use Saloon\PaginationPlugin\Contracts\HasPagination;
 use App\Http\Integrations\Spotify\Requests\RefreshTokensRequest;
-use App\Http\Integrations\Spotify\Paginations\PlaylistsPagination;
+use App\Http\Integrations\Spotify\Paginations\PlaylistsPaginator;
 use App\Models\User;
 
 class SpotifyConnector extends Connector implements HasPagination
@@ -54,30 +51,32 @@ class SpotifyConnector extends Connector implements HasPagination
         if ( ! $exception instanceof RequestException ) return false;
         if ( $exception->getResponse()->status() !== 401 ) return false;
 
-        $this->refreshToken();
+        $this->refresh_tokens();
 
         return true;
     }
 
-    protected function refreshToken(): void
+    /**
+     * Refresh the tokens for the connector and update the user
+     */
+    protected function refresh_tokens(): void {
+        $new_authenticator = $this->refreshAccessToken( $this->user->spotify_refresh_token );
+        $this->authenticate( $new_authenticator );
+
+        $this->user->update([
+            'spotify_token'         => $new_authenticator->getAccessToken(),
+            'spotify_refresh_token' => $new_authenticator->getRefreshToken() ?? $this->user->spotify_refresh_token,
+        ]);
+    }
+
+    protected function resolveRefreshTokenRequest(OAuthConfig $oauthConfig, string $refreshToken): Request
     {
-        $response = $this->send(
-            new RefreshTokensRequest( $this->user->spotify_refresh_token )
-        );
-
-        $oauth_details = $response->dtoOrFail();
-        $access_token  = $oauth_details->access_token;
-        $refresh_token = $oauth_details->refresh_token ?? $this->user->spotify_refresh_token;
-
-        $this->user->update( [
-            'spotify_token'         => $access_token,
-            'spotify_refresh_token' => $refresh_token
-        ] );
+        return new RefreshTokensRequest( $oauthConfig, $refreshToken );
     }
 
     public function paginate(Request $request): Paginator
     {
-        return new PlaylistsPagination(
+        return new PlaylistsPaginator(
             connector: $this,
             request  : $request
         );
