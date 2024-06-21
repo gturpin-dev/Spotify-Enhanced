@@ -5,9 +5,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PlaylistsController;
 use App\Http\Controllers\GithubAuthController;
 use App\Http\Controllers\SpotifyAuthController;
-use App\Http\Integrations\Spotify\Requests\GetAllUserPlaylistsRequest;
 use App\Http\Integrations\Spotify\SpotifyConnector;
 use App\Http\Middleware\EnsureSpotifyAccountLinked;
+use App\Http\Integrations\Spotify\Requests\GetPlaylistTracksRequest;
 
 Route::get('/', function () {
     return view('welcome');
@@ -41,3 +41,13 @@ Route::get('/auth/spotify', [SpotifyAuthController::class, 'redirectToProvider']
 Route::get('/auth/spotify/callback', [SpotifyAuthController::class, 'handleProviderCallback']);
 
 require __DIR__.'/auth.php';
+
+Route::get('/test', function() {
+    $current_user = auth()->user();
+    $connector    = new SpotifyConnector( $current_user );
+    $request      = new GetPlaylistTracksRequest( '1QNIPdWMxKHBYED5ZXfNVU' );
+
+    $request->paginate( $connector )->collect()->dd();
+
+    return 'test';
+});
