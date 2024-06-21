@@ -32,7 +32,8 @@ class FetchUserSpotifyPlaylistsJob implements ShouldQueue
     public function handle( PlaylistService $playlist_service ): void
     {
         $spotify_connector = new SpotifyConnector( $this->user );
-        $spotify_connector->paginate( new GetAllUserPlaylistsRequest( $this->user->spotify_id ) )
+        $request           = new GetAllUserPlaylistsRequest( $this->user->spotify_id );
+        $request->paginate( $spotify_connector )
             ->collect()
             ->each( fn( PlaylistDTO $playlist_dto ) => $playlist_service->store( $playlist_dto, $this->user ) );
     }

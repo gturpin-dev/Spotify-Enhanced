@@ -17,7 +17,7 @@ use App\Http\Integrations\Spotify\Requests\RefreshTokensRequest;
 use App\Http\Integrations\Spotify\Paginations\PlaylistsPaginator;
 use App\Models\User;
 
-class SpotifyConnector extends Connector implements HasPagination
+class SpotifyConnector extends Connector
 {
     use AuthorizationCodeGrant;
     use AcceptsJson;
@@ -72,14 +72,6 @@ class SpotifyConnector extends Connector implements HasPagination
     protected function resolveRefreshTokenRequest(OAuthConfig $oauthConfig, string $refreshToken): Request
     {
         return new RefreshTokensRequest( $oauthConfig, $refreshToken );
-    }
-
-    public function paginate(Request $request): Paginator
-    {
-        return new PlaylistsPaginator(
-            connector: $this,
-            request  : $request
-        );
     }
 
     /**
