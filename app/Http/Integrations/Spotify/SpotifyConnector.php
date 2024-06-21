@@ -43,7 +43,7 @@ class SpotifyConnector extends Connector implements HasPagination
     }
 
     /**
-     * Handle out of date token errors and refresh on the fly
+     * Handle out of date token errors and refresh it on the fly
      */
     public function handleRetry(FatalRequestException|RequestException $exception, Request $request): bool
     {

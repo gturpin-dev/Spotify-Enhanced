@@ -15,6 +15,8 @@ class PlaylistService
      */
     public function store( PlaylistDTO $playlist_dto, User $user ): void
     {
-        $user->playlists()->create( $playlist_dto->toArray() );
+        $user->playlists()->firstOrCreate( [
+            'spotify_id' => $playlist_dto->spotify_id
+        ], $playlist_dto->toArray() );
     }
 }

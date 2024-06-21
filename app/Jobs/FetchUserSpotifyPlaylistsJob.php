@@ -6,11 +6,12 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use App\DataObjects\Spotify\PlaylistDTO;
+use App\Http\Integrations\Spotify\Requests\GetAllUserPlaylistsRequest;
+use App\Http\Integrations\Spotify\SpotifyConnector;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Services\Spotify\PlaylistService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Services\Api\Spotify\SpotifyApiWrapper;
 
 class FetchUserSpotifyPlaylistsJob implements ShouldQueue
 {
@@ -28,12 +29,11 @@ class FetchUserSpotifyPlaylistsJob implements ShouldQueue
     /**
      * Execute the job.
      */
-        public function handle( PlaylistService $playlist_service, SpotifyApiWrapper $spotify_api_wrapper  ): void
+    public function handle( PlaylistService $playlist_service ): void
     {
-        $spotify_api_wrapper->act_as( $this->user );
-
-        collect( $spotify_api_wrapper->get_playlists() )
-            ->map( fn( array $playlist ) => PlaylistDTO::from( $playlist ) )
+        $spotify_connector = new SpotifyConnector( $this->user );
+        $spotify_connector->paginate( new GetAllUserPlaylistsRequest( $this->user->spotify_id ) )
+            ->collect()
             ->each( fn( PlaylistDTO $playlist_dto ) => $playlist_service->store( $playlist_dto, $this->user ) );
     }
 }

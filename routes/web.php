@@ -41,17 +41,3 @@ Route::get('/auth/spotify', [SpotifyAuthController::class, 'redirectToProvider']
 Route::get('/auth/spotify/callback', [SpotifyAuthController::class, 'handleProviderCallback']);
 
 require __DIR__.'/auth.php';
-
-
-Route::get('test', function () {
-    $current_user      = auth()->user();
-    $spotify_connector = new SpotifyConnector( $current_user );
-    $paginator         = $spotify_connector->paginate( new GetAllUserPlaylistsRequest( $current_user->spotify_id ) );
-    $playlists         = iterator_to_array( $paginator->items() );
-
-    dd(
-        $playlists
-    );
-
-    return 'Hello World';
-});
