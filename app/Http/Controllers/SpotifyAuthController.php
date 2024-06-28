@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use App\Jobs\FetchUserSpotifyPlaylistsJob;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 
 /**
@@ -65,5 +66,7 @@ class SpotifyAuthController extends Controller
         $user->spotify_token         = $spotify_user->token;
         $user->spotify_refresh_token = $spotify_user->refreshToken;
         $user->save();
+
+        FetchUserSpotifyPlaylistsJob::dispatch( $user );
     }
 }
