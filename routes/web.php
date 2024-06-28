@@ -1,5 +1,9 @@
 <?php
 
+use App\DataObjects\Spotify\TrackDTO;
+use App\Models\Playlist;
+use App\Jobs\StorePlaylistTracks;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PlaylistsController;
@@ -41,13 +45,3 @@ Route::get('/auth/spotify', [SpotifyAuthController::class, 'redirectToProvider']
 Route::get('/auth/spotify/callback', [SpotifyAuthController::class, 'handleProviderCallback']);
 
 require __DIR__.'/auth.php';
-
-Route::get('/test', function() {
-    $current_user = auth()->user();
-    $connector    = new SpotifyConnector( $current_user );
-    $request      = new GetPlaylistTracksRequest( '1QNIPdWMxKHBYED5ZXfNVU' );
-
-    $request->paginate( $connector )->collect()->dd();
-
-    return 'test';
-});

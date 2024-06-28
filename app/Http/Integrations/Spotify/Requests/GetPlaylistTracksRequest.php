@@ -43,7 +43,14 @@ class GetPlaylistTracksRequest extends Request implements Paginatable, HasReques
     {
         return $response->collect( 'items' )
             ->filter( fn( array $track ) => data_get( $track, 'track.type' ) === 'track' )
-            ->map( fn( array $track ) => TrackDTO::from( $track ) )
+            ->map( function( array $track ) {
+                try {
+                    return TrackDTO::from( $track );
+                } catch ( \TypeError $e ) {
+                    return null; // Skip the track if it's not a valid track
+                }
+            } )
+            ->filter()
             ->all();
     }
 }
