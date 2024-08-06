@@ -59,14 +59,14 @@ Route::get( '/consuming-passport/auth', function( Request $request ) {
     $request->session()->put( 'api-state', $state = $request->fingerprint() );
 
     $query_string = http_build_query( [
-        'client_id'     => env( 'PASSPORT_CONSUMING_CLIENT_ID' ),
-        'redirect_uri'  => env( 'PASSPORT_CONSUMING_REDIRECT_URI' ),
+        'client_id'     => config( 'services.consuming_passport.client_id' ),
+        'redirect_uri'  => config( 'services.consuming_passport.redirect_uri' ),
         'response_type' => 'code',
         'scope'         => '',
         'state'         => $state,
     ] );
 
-    return redirect( env( 'PASSPORT_CONSUMING_AUTHORIZATION_URL' ) . '?' . $query_string );
+    return redirect( config( 'services.consuming_passport.authorization_endpoint' ) . '?' . $query_string );
 } );
 
 Route::get( '/consuming-passport/auth/callback', function( Request $request ) {
@@ -78,11 +78,11 @@ Route::get( '/consuming-passport/auth/callback', function( Request $request ) {
         'Invalid state value.'
     );
 
-    $response = Http::asForm()->post( env( 'PASSPORT_CONSUMING_TOKEN_URL' ), [
+    $response = Http::asForm()->post( config( 'services.consuming_passport.token_endpoint' ), [
         'grant_type'    => 'authorization_code',
-        'client_id'     => env( 'PASSPORT_CONSUMING_CLIENT_ID' ),
-        'client_secret' => env( 'PASSPORT_CONSUMING_CLIENT_SECRET' ),
-        'redirect_uri'  => env( 'PASSPORT_CONSUMING_REDIRECT_URI' ),
+        'client_id'     => config( 'services.consuming_passport.client_id' ),
+        'client_secret' => config( 'services.consuming_passport.client_secret' ),
+        'redirect_uri'  => config( 'services.consuming_passport.redirect_uri' ),
         'code'          => $request->input( 'code' ),
     ] );
 

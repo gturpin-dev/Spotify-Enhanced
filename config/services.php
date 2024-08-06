@@ -52,4 +52,12 @@ return [
             'playlist-modify-public',
         ],
     ],
+
+    'consuming_passport' => [
+        'client_id'              => env('PASSPORT_CONSUMING_CLIENT_ID'),
+        'client_secret'          => env('PASSPORT_CONSUMING_CLIENT_SECRET'),
+        'redirect_uri'           => config( 'app.url' ) . '/consuming-passport/auth/callback',
+        'authorization_endpoint' => config( 'app.url' ) . '/oauth/authorize',
+        'token_endpoint'         => config( 'app.url' ) . '/oauth/token',
+    ],
 ];
