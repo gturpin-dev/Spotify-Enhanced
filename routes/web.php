@@ -13,6 +13,7 @@ use App\Http\Integrations\ConsumingPassport\ConsumingPassportConnector;
 use App\Http\Integrations\Spotify\SpotifyConnector;
 use App\Http\Middleware\EnsureSpotifyAccountLinked;
 use App\Http\Integrations\Spotify\Requests\GetPlaylistTracksRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\UrlHelper;

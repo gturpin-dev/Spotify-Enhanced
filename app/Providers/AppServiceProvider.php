@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
         } );
 
         // Add method "search" for the Query Builder
-        Builder::macro( 'search', function ( string $field, string $search ) {
+        Builder::macro( 'search', function ( string $field, string $search ): Builder {
             return $this->where( $field, 'LIKE', '%' . $search . '%' );
         } );
     }
