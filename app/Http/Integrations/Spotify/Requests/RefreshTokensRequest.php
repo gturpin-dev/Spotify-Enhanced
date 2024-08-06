@@ -14,15 +14,15 @@ class RefreshTokensRequest extends Request implements HasBody
 {
     use HasFormBody;
 
-    public function __construct(
-        protected readonly OAuthConfig $oauth_config,
-        protected readonly string $refresh_token
-    ) {}
-
     /**
      * The HTTP method of the request
      */
     protected Method $method = Method::POST;
+
+    public function __construct(
+        protected readonly OAuthConfig $oauth_config,
+        protected readonly string $refresh_token
+    ) {}
 
     /**
      * The endpoint for the request

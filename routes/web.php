@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PlaylistsController;
 use App\Http\Controllers\GithubAuthController;
 use App\Http\Controllers\SpotifyAuthController;
+use App\Http\Integrations\ConsumingPassport\ConsumingPassportConnector;
 use App\Http\Integrations\Spotify\SpotifyConnector;
 use App\Http\Middleware\EnsureSpotifyAccountLinked;
 use App\Http\Integrations\Spotify\Requests\GetPlaylistTracksRequest;
@@ -56,46 +57,31 @@ require __DIR__.'/auth.php';
  * Tests the passport from client side application
  */
 Route::get( '/consuming-passport/auth', function( Request $request ) {
-    $request->session()->put( 'api-state', $state = $request->fingerprint() );
+    $connector         = new ConsumingPassportConnector( $request->user() );
+    $authorization_url = $connector->getAuthorizationUrl();
+    $state             = $connector->getState();
 
-    $query_string = http_build_query( [
-        'client_id'     => config( 'services.consuming_passport.client_id' ),
-        'redirect_uri'  => config( 'services.consuming_passport.redirect_uri' ),
-        'response_type' => 'code',
-        'scope'         => '',
-        'state'         => $state,
-    ] );
+    $request->session()->put( 'state', $state );
 
-    return redirect( config( 'services.consuming_passport.authorization_endpoint' ) . '?' . $query_string );
-} );
+    return redirect( $authorization_url );
+} )->middleware( 'auth' );
 
 Route::get( '/consuming-passport/auth/callback', function( Request $request ) {
-    $state = $request->session()->pull( 'api-state' );
-
-    throw_unless(
-        ! empty( $state ) && $state === $request->input( 'state' ),
-        InvalidArgumentException::class,
-        'Invalid state value.'
+    $current_user  = $request->user();
+    $connector     = new ConsumingPassportConnector( $current_user );
+    $authenticator = $connector->getAccessToken(
+        code         : $request->input( 'code', '' ),
+        state        : $request->input( 'state', '' ),
+        expectedState: $request->session()->pull( 'state', '' ),
     );
 
-    $response = Http::asForm()->post( config( 'services.consuming_passport.token_endpoint' ), [
-        'grant_type'    => 'authorization_code',
-        'client_id'     => config( 'services.consuming_passport.client_id' ),
-        'client_secret' => config( 'services.consuming_passport.client_secret' ),
-        'redirect_uri'  => config( 'services.consuming_passport.redirect_uri' ),
-        'code'          => $request->input( 'code' ),
-    ] );
+    $current_user->storeConsumingPassportOAuthProvider( $authenticator );
+} )->middleware( 'auth' );
 
-    /**
-     * If need to refresh tokens
-     */
-    // $response = Http::asForm()->post('http://passport-app.test/oauth/token', [
-    //     'grant_type' => 'refresh_token',
-    //     'refresh_token' => 'the-refresh-token',
-    //     'client_id' => 'client-id',
-    //     'client_secret' => 'client-secret',
-    //     'scope' => '',
-    // ]);
+Route::get( '/test', function() {
+    $connector = new ConsumingPassportConnector( auth()->user() );
 
-    return $response->json();
-} );
+    dd(
+        $connector
+    );
+});
