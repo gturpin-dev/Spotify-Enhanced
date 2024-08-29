@@ -15,8 +15,8 @@ class ArtistsResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'   => $this->id,
-            'type' => 'artists',
+            'id'         => $this->id,
+            'type'       => 'artists',
             'attributes' => [
                 'spotify_id' => $this->spotify_id,
                 'name'       => $this->name,
