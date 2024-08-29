@@ -30,10 +30,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Artist whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Artist whereSpotifyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Artist whereUpdatedAt($value)
- * @mixin \Eloquent
  */
-	#[\AllowDynamicProperties]
-	class IdeHelperArtist {}
+	class Artist extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -58,10 +56,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ConsumingPassportOAuthProvider whereRefreshToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ConsumingPassportOAuthProvider whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ConsumingPassportOAuthProvider whereUserId($value)
- * @mixin \Eloquent
  */
-	#[\AllowDynamicProperties]
-	class IdeHelperConsumingPassportOAuthProvider {}
+	class ConsumingPassportOAuthProvider extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -93,10 +89,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Playlist whereThumbnailUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Playlist whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Playlist whereUserId($value)
- * @mixin \Eloquent
  */
-	#[\AllowDynamicProperties]
-	class IdeHelperPlaylist {}
+	class Playlist extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -120,10 +114,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Track whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Track whereSpotifyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Track whereUpdatedAt($value)
- * @mixin \Eloquent
  */
-	#[\AllowDynamicProperties]
-	class IdeHelperTrack {}
+	class Track extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -172,9 +164,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereSpotifyToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User withSpotifyAccountLinked()
- * @mixin \Eloquent
  */
-	#[\AllowDynamicProperties]
-	class IdeHelperUser {}
+	class User extends \Eloquent {}
 }
 
