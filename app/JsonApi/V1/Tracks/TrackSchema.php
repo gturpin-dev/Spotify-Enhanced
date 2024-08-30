@@ -1,11 +1,12 @@
 <?php
 
-namespace App\JsonApi\V1\Artists;
+namespace App\JsonApi\V1\Tracks;
 
-use App\Models\Artist;
+use App\Models\Track;
 use LaravelJsonApi\Eloquent\Schema;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
+use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
@@ -13,14 +14,15 @@ use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsToMany;
 
-class ArtistSchema extends Schema
+class TrackSchema extends Schema
 {
+
     /**
      * The model the schema corresponds to.
      *
      * @var string
      */
-    public static string $model = Artist::class;
+    public static string $model = Track::class;
 
     /**
      * The default sort order for this resource.
@@ -50,7 +52,8 @@ class ArtistSchema extends Schema
             ID::make(),
             Str::make('name')->sortable(),
             Str::make('spotify_id')->sortable(),
-            BelongsToMany::make('tracks'),
+            Number::make('duration_ms')->sortable(),
+            BelongsToMany::make('artists'),
             DateTime::make('createdAt')->sortable()->readOnly(),
             DateTime::make('updatedAt')->sortable()->readOnly(),
         ];
@@ -79,4 +82,5 @@ class ArtistSchema extends Schema
     {
         return PagePagination::make();
     }
+
 }
